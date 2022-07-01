@@ -258,5 +258,5 @@ In the end, quite a few vulnerabilities were present and many of them are miscon
 
 - Enforce read and write permissions to various SMB shares and dont store sensitive information
 - Implement a strong password policy : one upper case, one lower case, one number and one special character required, 12 characters minimum
-- Do not keep Powershell commands history or strongly reinforce its access by changing the configuration the account configuration
+- Do not keep Powershell commands history or strongly reinforce its access by changing the account configuration
 - Do not grant privileged rights to extract sensitive information in case of compromission, except to the domain controller. Hence, it is recommended to integrate additional security measures with the implementation of LAPS.
