@@ -12,8 +12,8 @@ nmap -Pn -sC -sV -p- -o nmap/timelapse.nmap 10.10.11.152
 ```
 La machine est opérationnelle, par conséquent, pas besoin de ping (-Pn). 
 On exécute les scripts NSE traditionnels (-sC) et on demande la version de chaque service trouvé (-sV). 
-Le tout en allant chercher tous les ports existants (-p-).
-nnma
+Le tout en allant chercher tous les ports existants (-p-). Le résultat est renvoyé dans un fichier (-o).
+
 Résultat :
 
 ```
